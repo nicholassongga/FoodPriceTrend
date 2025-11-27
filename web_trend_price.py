@@ -123,7 +123,7 @@ def fetch_google_trends(keyword, start_date_str, end_date_str, geo='US', max_ret
 
 # --- Streamlit UI ---
 st.set_page_config(layout="wide")
-st.title("Correlation between Keyword Search Frequency and Consumer Item Price")
+st.title("Correlation between Keyword Trend and Food Price")
 
 # Initialize session state for analysis flag and data
 if 'run_analysis' not in st.session_state:
