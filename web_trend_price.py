@@ -214,9 +214,9 @@ with st.sidebar:
                 if not trend_df.empty:
                     df_trends_reindexed = trend_df.reindex(full_date_range)
                     df_trends_reindexed['frequency'] = df_trends_reindexed['frequency'].interpolate(method='linear')
-                    df[f'{st.session_state.current_keyword.title()} Search Frequency'] = df_trends_reindexed['frequency']
+                    df[f'{st.session_state.current_keyword.title()} Trend'] = df_trends_reindexed['frequency']
                 else:
-                    df[f'{st.session_state.current_keyword.title()} Search Frequency'] = np.nan
+                    df[f'{st.session_state.current_keyword.title()} Trend'] = np.nan
 
                 if not bls_df_series.empty:
                     df_price_reindexed = bls_df_series.reindex(full_date_range)
@@ -224,7 +224,7 @@ with st.sidebar:
                 else:
                     df[st.session_state.price_signal_name] = np.nan
 
-                df.dropna(subset=[f'{st.session_state.current_keyword.title()} Search Frequency', st.session_state.price_signal_name], how='all', inplace=True)
+                df.dropna(subset=[f'{st.session_state.current_keyword.title()} Trend', st.session_state.price_signal_name], how='all', inplace=True)
 
                 if df.empty:
                     st.error("No common data points with valid data found for the selected period. Cannot generate plots.")
@@ -238,7 +238,7 @@ with st.sidebar:
 # --- Display Results ---
 if st.session_state.run_analysis:
     # --- Map Display ---
-    st.subheader("Regional Search Frequency Map (US States)")
+    st.subheader("Regional Keyword Trend Map (US States)")
     st.caption("Google Trends regional data is an average over the selected period, not daily. Therefore, the map's colors represent the overall average frequency for each state during the selected date range and do not change with a time slider.")
 
     if not st.session_state.regional_trends_df.empty:
@@ -262,26 +262,26 @@ if st.session_state.run_analysis:
                 mapbox_style="carto-positron",
                 zoom=3, center={"lat": 37.0902, "lon": -95.7129},
                 opacity=0.7,
-                labels={'frequency': f'{st.session_state.current_keyword.title()} Search Frequency'}
+                labels={'frequency': f'{st.session_state.current_keyword.title()} Trend'}
             )
             map_fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
             st.plotly_chart(map_fig, use_container_width=True, config={'scrollZoom': True})
         except Exception as e:
             st.error(f"Could not load or display map: {e}. Please check your internet connection or the GeoJSON URL.")
     else:
-        st.info("No regional search frequency data available to display on the map.")
+        st.info("No regional keyword trend data available to display on the map.")
 
     # --- Line Plot ---
-    st.subheader("Search Frequency vs. Item Price Over Time")
+    st.subheader("Keyword Trend vs. Food Price Over Time")
 
     if not st.session_state.merged_df.empty:
         fig_line = go.Figure()
 
-        # Add Search Frequency Trace
+        # Add Keyword Trend Trace
         fig_line.add_trace(go.Scatter(
             x=st.session_state.merged_df['date'],
-            y=st.session_state.merged_df[f'{st.session_state.current_keyword.title()} Search Frequency'],
-            name=f"{st.session_state.current_keyword.title()} Search Frequency",
+            y=st.session_state.merged_df[f'{st.session_state.current_keyword.title()} Trend'],
+            name=f"{st.session_state.current_keyword.title()} Trend",
             mode='lines',
             line=dict(color='skyblue'),
             yaxis="y1"
@@ -298,10 +298,10 @@ if st.session_state.run_analysis:
         ))
 
         fig_line.update_layout(
-            title_text=f"{st.session_state.current_keyword.title()} Search Frequency vs. {st.session_state.current_item_input.title()} Price",
+            title_text=f"{st.session_state.current_keyword.title()} Trend vs. {st.session_state.current_item_input.title()} Price",
             xaxis_title="Date",
             yaxis=dict(
-                title=f"Search Frequency (Google Trends)",
+                title=f"Keyword Trend (Google Trends)",
                 side="left",
                 showgrid=True,
                 zeroline=True,
@@ -329,7 +329,7 @@ if st.session_state.run_analysis:
     # --- Data Table ---
     st.subheader("Raw Data Table")
     if not st.session_state.merged_df.empty:
-        display_df = st.session_state.merged_df[['date', f'{st.session_state.current_keyword.title()} Search Frequency', st.session_state.price_signal_name]].copy()
+        display_df = st.session_state.merged_df[['date', f'{st.session_state.current_keyword.title()} Trend', st.session_state.price_signal_name]].copy()
         display_df['date'] = display_df['date'].astype(str)
         st.dataframe(display_df, height=300)
 
