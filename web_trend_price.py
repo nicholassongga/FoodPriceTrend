@@ -51,6 +51,10 @@ def fetch_bls_data(series_id, start_year, end_year, api_key):
                 period_name = entry['period']
                 if period_name in period_map:
                     date_str = f"{entry['year']}-{period_map[period_name]}-01"
+                    value_str = str(entry.get("value", "")).strip()
+                    if value_str in {"-", ""}:
+                        continue  # skip missing values from BLS
+                        
                     prices.append({
                         "date": datetime.strptime(date_str, '%Y-%m-%d').date(), # Store as date object
                         "price": float(entry['value'])
