@@ -147,7 +147,7 @@ if 'current_item_input' not in st.session_state:
 if 'current_start_date' not in st.session_state:
     st.session_state.current_start_date = datetime(2024, 7, 1).date()
 if 'current_end_date' not in st.session_state:
-    st.session_state.current_end_date = datetime.now().date()
+    st.session_state.current_end_date = datetime(2025, 6, 1).date() #datetime.now().date()
 
 
 with st.sidebar:
