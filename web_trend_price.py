@@ -241,40 +241,6 @@ with st.sidebar:
 
 # --- Display Results ---
 if st.session_state.run_analysis:
-    # --- Map Display ---
-    st.subheader("Regional Keyword Trend Map (US States)")
-    st.caption("Google Trends regional data is an average over the selected period, not daily. Therefore, the map's colors represent the overall average frequency for each state during the selected date range and do not change with a time slider.")
-
-    if not st.session_state.regional_trends_df.empty:
-        try:
-            geojson_url = "https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json"
-            response = requests.get(geojson_url)
-            response.raise_for_status()
-            us_states_geojson = response.json()
-
-            regional_trends_df_for_map = st.session_state.regional_trends_df.reset_index()
-            regional_trends_df_for_map.rename(columns={'state_name': 'name'}, inplace=True)
-
-            map_fig = px.choropleth_mapbox(
-                regional_trends_df_for_map,
-                geojson=us_states_geojson,
-                locations='name',
-                featureidkey="properties.name",
-                color='frequency',
-                color_continuous_scale="Viridis",
-                range_color=(0, regional_trends_df_for_map['frequency'].max()),
-                mapbox_style="carto-positron",
-                zoom=3, center={"lat": 37.0902, "lon": -95.7129},
-                opacity=0.7,
-                labels={'frequency': f'{st.session_state.current_keyword.title()} Trend'}
-            )
-            map_fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-            st.plotly_chart(map_fig, use_container_width=True, config={'scrollZoom': True})
-        except Exception as e:
-            st.error(f"Could not load or display map: {e}. Please check your internet connection or the GeoJSON URL.")
-    else:
-        st.info("No regional keyword trend data available to display on the map.")
-
     # --- Line Plot ---
     st.subheader("Keyword Trend vs. Food Price Over Time")
 
@@ -329,6 +295,40 @@ if st.session_state.run_analysis:
         st.plotly_chart(fig_line, use_container_width=True)
     else:
         st.info("No time series data available for plotting.")
+
+    # --- Map Display ---
+    st.subheader("Regional Keyword Trend Map (US States)")
+    st.caption("Google Trends regional data is an average over the selected period, not daily. Therefore, the map's colors represent the overall average frequency for each state during the selected date range and do not change with a time slider.")
+
+    if not st.session_state.regional_trends_df.empty:
+        try:
+            geojson_url = "https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json"
+            response = requests.get(geojson_url)
+            response.raise_for_status()
+            us_states_geojson = response.json()
+
+            regional_trends_df_for_map = st.session_state.regional_trends_df.reset_index()
+            regional_trends_df_for_map.rename(columns={'state_name': 'name'}, inplace=True)
+
+            map_fig = px.choropleth_mapbox(
+                regional_trends_df_for_map,
+                geojson=us_states_geojson,
+                locations='name',
+                featureidkey="properties.name",
+                color='frequency',
+                color_continuous_scale="Viridis",
+                range_color=(0, regional_trends_df_for_map['frequency'].max()),
+                mapbox_style="carto-positron",
+                zoom=3, center={"lat": 37.0902, "lon": -95.7129},
+                opacity=0.7,
+                labels={'frequency': f'{st.session_state.current_keyword.title()} Trend'}
+            )
+            map_fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+            st.plotly_chart(map_fig, use_container_width=True, config={'scrollZoom': True})
+        except Exception as e:
+            st.error(f"Could not load or display map: {e}. Please check your internet connection or the GeoJSON URL.")
+    else:
+        st.info("No regional keyword trend data available to display on the map.")
 
     # --- Data Table ---
     st.subheader("Raw Data Table")
