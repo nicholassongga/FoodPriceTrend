@@ -127,7 +127,7 @@ def fetch_google_trends(keyword, start_date_str, end_date_str, geo='US', max_ret
 
 # --- Streamlit UI ---
 st.set_page_config(layout="wide", initial_sidebar_state="expanded")
-st.title("Correlation between Keyword Trend and Food Price")
+st.title("AI4Food: Using Google Trends Data to Predict Food Prices")
 
 # Initialize session state for analysis flag and data
 if 'run_analysis' not in st.session_state:
