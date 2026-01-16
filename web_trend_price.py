@@ -126,7 +126,7 @@ def fetch_google_trends(keyword, start_date_str, end_date_str, geo='US', max_ret
     return pd.DataFrame(), pd.DataFrame() # Should not be reached if max_retries is handled
 
 # --- Streamlit UI ---
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide", initial_sidebar_state="expanded")
 st.title("Correlation between Keyword Trend and Food Price")
 
 # Initialize session state for analysis flag and data
